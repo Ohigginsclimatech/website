@@ -318,17 +318,12 @@ main{
 }
 
 
-/*   Contacto html    */
-
-
-
-
+/* Contacto html */
 .container4 {
     max-width: 1170px;
     margin-left: auto;
     margin-right: auto;
     padding: 1.5em;
-    
 }
 
 ul {
@@ -348,9 +343,9 @@ ul {
 
 .contact-wrapper {
     margin-top: 15px;
-    border: 5px solid #ffffff; /* Agrega un borde azul alrededor del elemento */
-    border-radius: 5px; /* Redondea los bordes del elemento */
-    box-shadow: 0 0 20px 0 rgb(255, 255, 255);
+    border: 5px solid #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
 }
 
 .contact-wrapper > * {
@@ -395,7 +390,6 @@ ul {
 .contact-form form button {
     background: #0d6efd;
     color: #ffffff;
-    border: 50%;
     text-transform: uppercase;
     padding: 1em;
     font-size: 14px;
@@ -413,7 +407,7 @@ ul {
     outline: 0;
 }
 
-/* CONTACT INFO */
+/* Contact Info */
 .contact-info {
     background: #fff;
 }
@@ -423,22 +417,10 @@ ul {
     margin: 0 0 1rem 0;
 }
 
-/* LARGE SIZE */
-@media2(min-width: 700px) {
-    body {
-        padding: 0 4em;
-    }
-    .contact-wrapper {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-    }
-    .contact-wrapper > * {
-        padding: 2em;
-    }
-    .contact-info h4,
-    .contact-info ul,
-    .contact-info p {
-        text-align: left;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .contact-form form {
+        grid-template-columns: 1fr; /* This makes the form fields stack vertically on small screens */
     }
 }
 
