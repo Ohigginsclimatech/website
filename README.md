@@ -4,6 +4,12 @@
 
 Hecho con [Astro](https://astro.build) + React. Se publica solo en GitHub Pages cada vez que se sube un cambio a `main`.
 
+## Administrador de equipos (sin programar)
+
+Doble clic en **"Administrar Olivar Clima"** en el escritorio (o en `admin/Administrar Olivar Clima.bat`).
+Se abre una ventana para cambiar precios, subir fotos, agregar/ocultar equipos y **publicar en la web** con un botón.
+Los equipos se guardan en `src/data/products.json`; las fotos subidas en `public/img/equipos/`.
+
 ## Editar contenido
 
 | Qué quieres cambiar | Archivo |
