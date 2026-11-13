@@ -1,0 +1,51 @@
+---
+import Logo from './Logo.astro';
+import { site } from '../data/site';
+import { Phone, Mail, Pin, Instagram } from './icons';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="top">
+      <div class="brand">
+        <Logo light />
+        <p>{site.slogan}</p>
+      </div>
+      <ul class="contact">
+        <li><Phone /><a href={site.phoneHref}>{site.phoneDisplay}</a></li>
+        <li><Mail /><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li><Pin />{site.address.street}, {site.address.locality}</li>
+        <li><Instagram /><a href={site.instagram} target="_blank" rel="noopener">Instagram</a></li>
+      </ul>
+      <nav aria-label="Pie de página">
+        <a href="#servicios">Servicios</a>
+        <a href="#equipos">Equipos y precios</a>
+        <a href="#calculadora">Calculadora BTU</a>
+        <a href="#preguntas">Preguntas</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </div>
+    <div class="bottom">
+      <span>© {year} {site.name} · Aire acondicionado en la Sexta Región</span>
+      <span>Hecho con cariño en Olivar 🫒</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer { background: var(--olive-950); color: oklch(0.85 0.02 110); padding-block: 64px 32px; }
+  .top { display: grid; gap: 40px; }
+  @media (min-width: 860px) { .top { grid-template-columns: 1.3fr 1.2fr 1fr; } }
+  .brand p { margin-top: 16px; font-family: var(--font-display); font-size: 1.25rem; color: #fff; max-width: 300px; }
+  .contact { list-style: none; padding: 0; display: grid; gap: 14px; }
+  .contact li { display: flex; gap: 12px; align-items: center; overflow-wrap: anywhere; }
+  .contact svg { width: 20px; height: 20px; color: var(--olive-400); flex: none; }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: #fff; text-decoration: underline; }
+  nav { display: grid; gap: 10px; align-content: start; }
+  .bottom {
+    margin-top: 48px; padding-top: 24px; border-top: 1px solid oklch(1 0 0 / 0.1);
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 0.875rem; color: oklch(0.7 0.02 110);
+  }
+</style>

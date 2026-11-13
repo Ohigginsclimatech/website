@@ -1,0 +1,61 @@
+---
+import { Bag, Wrench, Snow, Pulse } from './icons';
+
+const services = [
+  {
+    icon: Bag,
+    title: 'Venta de equipos',
+    text: 'Split muro Midea e Hisense de 9.000 a 18.000 BTU, normales e inverter, todos con WiFi. Te ayudamos a elegir el tamaño justo.',
+  },
+  {
+    icon: Wrench,
+    title: 'Instalación',
+    text: 'Instalación completa y prolija: montaje, perforación, cañerías aisladas, desagüe y puesta en marcha. Lo dejamos funcionando.',
+  },
+  {
+    icon: Snow,
+    title: 'Mantención',
+    text: 'Limpieza de filtros, serpentines y desagüe para que tu equipo enfríe bien, gaste menos luz y dure más años.',
+  },
+  {
+    icon: Pulse,
+    title: 'Diagnóstico y reparación',
+    text: '¿No enfría, gotea o hace ruido? Revisamos tu equipo, te explicamos qué tiene y te damos una solución clara.',
+  },
+];
+---
+
+<section id="servicios" class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Servicios</span>
+      <h2>Todo lo que tu aire acondicionado necesita, con una sola llamada.</h2>
+      <p>Desde elegir el equipo hasta la mantención de cada temporada. Trabajo honesto y bien hecho, como lo harías tú en tu propia casa.</p>
+    </div>
+
+    <div class="grid">
+      {
+        services.map(({ icon: Icon, title, text }) => (
+          <article class="card item reveal">
+            <span class="ico"><Icon /></span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); }
+  .item { padding: 28px; transition: transform .25s ease, box-shadow .25s ease; }
+  .item:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  .ico {
+    width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center;
+    background: var(--olive-100); color: var(--olive-700); margin-bottom: 20px;
+  }
+  .ico :global(svg) { width: 26px; height: 26px; }
+  h3 { font-size: 1.375rem; margin-bottom: 10px; }
+  p { color: var(--muted); font-size: 0.975rem; }
+</style>

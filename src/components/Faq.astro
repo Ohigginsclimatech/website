@@ -1,0 +1,83 @@
+---
+const faqs = [
+  {
+    q: '¿Qué incluye el precio de cada equipo?',
+    a: 'El equipo completo (unidad interior, exterior y control remoto) más la instalación estándar: hasta 4 metros de cañería con aislación térmica, perforación del muro, desagüe por gravedad, puesta en marcha y prueba de funcionamiento. Si tu instalación necesita más metros de cañería o escuadras, te lo decimos antes de empezar.',
+  },
+  {
+    q: '¿Cuál es la diferencia entre un equipo normal y uno inverter?',
+    a: 'Un equipo inverter regula su potencia en vez de prenderse y apagarse todo el rato. Eso lo hace más silencioso, mantiene una temperatura más pareja y gasta bastante menos luz. Si lo vas a usar seguido, el inverter se paga solo con el ahorro.',
+  },
+  {
+    q: '¿Cómo y cuándo pago?',
+    a: 'Coordinamos todo por WhatsApp y pagas en efectivo o por transferencia una vez que el trabajo está terminado o el producto entregado.',
+  },
+  {
+    q: '¿Cada cuánto debo hacerle mantención a mi aire?',
+    a: 'Lo recomendable es una mantención al año, idealmente antes del verano. Si el equipo se usa mucho o en un lugar con polvo, conviene cada 6 meses. Un equipo limpio enfría mejor y consume menos.',
+  },
+  {
+    q: 'Mi aire no enfría, gotea o hace ruido. ¿Qué hago?',
+    a: 'Apágalo y escríbenos con una foto o video. Muchas veces es un filtro sucio o el desagüe tapado, pero también puede faltar gas refrigerante. Hacemos el diagnóstico y te explicamos la solución antes de cobrar nada más.',
+  },
+  {
+    q: '¿Atienden en mi comuna?',
+    a: 'Atendemos Olivar, Rancagua, Coinco, Doñihue, Lo Miranda, Coltauco, Graneros, Requínoa, Rengo, Quinta de Tilcoco y sectores cercanos. Si estás en otra comuna de la Sexta Región, escríbenos igual.',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+
+<section id="preguntas" class="section">
+  <div class="container narrow">
+    <div class="section-head reveal">
+      <span class="eyebrow">Preguntas frecuentes</span>
+      <h2>Lo que más nos preguntan.</h2>
+    </div>
+    <div class="list">
+      {
+        faqs.map((f, i) => (
+          <details name="faq" open={i === 0} class="reveal">
+            <summary>{f.q}<span class="plus" aria-hidden="true"></span></summary>
+            <p>{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</section>
+
+<style>
+  .narrow { max-width: 860px; }
+  .list { display: grid; gap: 12px; }
+  details {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 4px 24px; transition: box-shadow .2s;
+  }
+  details[open] { box-shadow: var(--shadow); }
+  summary {
+    list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    padding-block: 18px; font-family: var(--font-display); font-weight: 600; font-size: 1.15rem;
+  }
+  summary::-webkit-details-marker { display: none; }
+  .plus { position: relative; width: 28px; height: 28px; border-radius: 50%; background: var(--bg-soft); flex: none; }
+  .plus::before, .plus::after {
+    content: ''; position: absolute; inset: 50% auto auto 50%; width: 12px; height: 2px; border-radius: 2px;
+    background: var(--brand); translate: -50% -50%; transition: rotate .25s ease;
+  }
+  .plus::after { rotate: 90deg; }
+  details[open] .plus::after { rotate: 0deg; }
+  details p { color: var(--muted); padding-bottom: 20px; }
+
+  @supports (interpolate-size: allow-keywords) {
+    details { interpolate-size: allow-keywords; }
+    details::details-content { block-size: 0; overflow: clip; transition: block-size .3s ease, content-visibility .3s allow-discrete; }
+    details[open]::details-content { block-size: auto; }
+  }
+</style>

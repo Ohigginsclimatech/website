@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base title="Página no encontrada · Olivar Clima">
+  <Header />
+  <main id="contenido" class="container nf">
+    <p class="code">404</p>
+    <h1>Esta página se fue a tomar aire fresco.</h1>
+    <p>Puede que el enlace sea antiguo. Vuelve al inicio para ver nuestros equipos y servicios.</p>
+    <a class="btn btn-primary" href="/">Volver al inicio</a>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .nf { min-height: 60vh; display: grid; place-content: center; justify-items: center; text-align: center; gap: 16px; padding-block: 96px; }
+  .code { font-family: var(--font-display); font-size: clamp(5rem, 18vw, 10rem); font-weight: 800; line-height: 1; color: var(--olive-400); }
+  h1 { font-size: clamp(1.75rem, 4vw, 2.75rem); max-width: 640px; }
+  p { color: var(--muted); max-width: 520px; }
+</style>

@@ -1,0 +1,62 @@
+---
+import { comunas, site, waLink } from '../data/site';
+import { Pin, Heart, Wallet, Leaf } from './icons';
+
+const values = [
+  { icon: Heart, title: 'Trato familiar', text: 'Somos de aquí. Te atendemos como a un vecino, porque probablemente lo eres.' },
+  { icon: Wallet, title: 'Precios claros', text: 'El precio que ves incluye la instalación estándar. Sin letra chica.' },
+  { icon: Leaf, title: 'Equipos eficientes', text: 'Te recomendamos opciones inverter para que ahorres luz todo el año.' },
+];
+---
+
+<section id="cobertura" class="section">
+  <div class="container grid">
+    <div class="reveal">
+      <span class="eyebrow">Cobertura</span>
+      <h2>De Olivar para toda la Sexta Región.</h2>
+      <p class="lead">
+        Nuestra base está en {site.address.locality}, así que llegamos rápido a las comunas del valle del Cachapoal.
+        ¿No ves la tuya? Escríbenos igual.
+      </p>
+      <ul class="comunas">
+        {comunas.map((c) => <li><Pin /> {c}</li>)}
+      </ul>
+      <a class="btn btn-ghost" href={waLink('Hola Olivar Clima, ¿atienden en mi comuna?')} target="_blank" rel="noopener">
+        Preguntar por mi comuna
+      </a>
+    </div>
+
+    <div class="values">
+      {
+        values.map(({ icon: Icon, title, text }) => (
+          <article class="card value reveal">
+            <span class="ico"><Icon /></span>
+            <div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; gap: 48px; align-items: center; }
+  @media (min-width: 960px) { .grid { grid-template-columns: 1.1fr 1fr; } }
+  h2 { font-size: clamp(2rem, 4.5vw, 3.25rem); margin-block: 12px 14px; }
+  .lead { color: var(--muted); font-size: 1.125rem; max-width: 560px; }
+  .comunas { list-style: none; padding: 0; margin-block: 28px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .comunas li {
+    display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line); font-size: 0.9rem; font-weight: 500;
+  }
+  .comunas svg { width: 16px; height: 16px; color: var(--brand); }
+  .values { display: grid; gap: 16px; }
+  .value { display: flex; gap: 18px; padding: 24px; align-items: flex-start; }
+  .ico { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--sky-200); color: oklch(0.42 0.1 225); flex: none; }
+  .ico :global(svg) { width: 24px; height: 24px; }
+  h3 { font-size: 1.25rem; margin-bottom: 6px; }
+  .value p { color: var(--muted); font-size: 0.975rem; }
+</style>

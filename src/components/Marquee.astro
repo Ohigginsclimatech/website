@@ -1,0 +1,28 @@
+---
+import { comunas } from '../data/site';
+const items = [...comunas, ...comunas];
+---
+
+<div class="marquee" aria-label="Comunas donde atendemos">
+  <div class="track">
+    {items.map((c, i) => <span aria-hidden={i >= comunas.length ? 'true' : undefined}>{c}</span>)}
+  </div>
+</div>
+
+<style>
+  .marquee {
+    border-block: 1px solid var(--line); background: var(--bg-soft); overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .track { display: flex; width: max-content; animation: slide 45s linear infinite; }
+  .marquee:hover .track { animation-play-state: paused; }
+  span {
+    padding: 18px 28px; font-family: var(--font-display); font-weight: 600; font-size: 1.125rem;
+    color: var(--muted); white-space: nowrap; display: flex; align-items: center; gap: 28px;
+  }
+  span::after { content: '✦'; color: var(--olive-400); font-size: 0.75rem; }
+  @keyframes slide { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .track { animation: none; flex-wrap: wrap; width: auto; justify-content: center; }
+  }
+</style>

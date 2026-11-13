@@ -1,0 +1,63 @@
+---
+import { installSteps } from '../data/products';
+import { Check } from './icons';
+
+const steps = [
+  { n: '01', title: 'Nos escribes', text: 'Por WhatsApp o teléfono. Cuéntanos qué necesitas y dónde estás.' },
+  { n: '02', title: 'Te asesoramos', text: 'Te recomendamos el equipo correcto según tu espacio y te damos un precio claro.' },
+  { n: '03', title: 'Instalamos', text: 'Coordinamos el día y hora. Llegamos puntuales y dejamos todo limpio.' },
+  { n: '04', title: 'Pagas al final', text: 'Pagas en efectivo o transferencia cuando el trabajo está listo y funcionando.' },
+];
+---
+
+<section id="como-trabajamos" class="section band">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Cómo trabajamos</span>
+      <h2>Simple, cercano y sin sorpresas.</h2>
+    </div>
+
+    <ol class="steps">
+      {
+        steps.map((s) => (
+          <li class="reveal">
+            <span class="n">{s.n}</span>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="includes card reveal">
+      <div>
+        <h3>¿Qué incluye la instalación?</h3>
+        <p>Instalación estándar incluida en el precio de cada equipo.</p>
+      </div>
+      <ul>
+        {installSteps.map((s) => <li><Check /> {s}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .band { background: var(--olive-950); color: oklch(0.95 0.01 100); --muted: oklch(0.78 0.03 115); }
+  .band .eyebrow { color: var(--olive-400); }
+  .steps { list-style: none; padding: 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); counter-reset: s; }
+  .steps li { padding: 28px; border-radius: var(--radius-lg); border: 1px solid oklch(1 0 0 / 0.1); background: oklch(1 0 0 / 0.04); }
+  .n { font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; color: var(--olive-400); line-height: 1; }
+  .steps h3 { font-size: 1.375rem; margin-block: 16px 8px; }
+  .steps p { color: var(--muted); font-size: 0.975rem; }
+
+  .includes {
+    margin-top: 24px; padding: clamp(24px, 4vw, 40px); display: grid; gap: 24px;
+    background: oklch(1 0 0 / 0.06); border-color: oklch(1 0 0 / 0.12); box-shadow: none; color: inherit;
+  }
+  @media (min-width: 860px) { .includes { grid-template-columns: 1fr 2fr; align-items: start; } }
+  .includes h3 { font-size: 1.625rem; margin-bottom: 8px; }
+  .includes p { color: var(--muted); }
+  .includes ul { list-style: none; padding: 0; display: grid; gap: 12px 24px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+  .includes li { display: flex; gap: 10px; align-items: flex-start; }
+  .includes svg { width: 20px; height: 20px; color: var(--olive-400); flex: none; margin-top: 3px; }
+</style>

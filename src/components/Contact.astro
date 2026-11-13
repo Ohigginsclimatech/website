@@ -1,0 +1,45 @@
+---
+import QuoteForm from './QuoteForm';
+import { site } from '../data/site';
+import { Phone, Mail, Pin, Instagram } from './icons';
+---
+
+<section id="contacto" class="section">
+  <div class="container">
+    <div class="box reveal">
+      <div class="copy">
+        <span class="eyebrow">Contacto</span>
+        <h2>¿Calor en casa? Conversemos.</h2>
+        <p>Cuéntanos qué necesitas y te respondemos por WhatsApp con una cotización clara. Sin compromiso.</p>
+        <ul>
+          <li><span class="ico"><Phone /></span><a href={site.phoneHref}>{site.phoneDisplay}</a></li>
+          <li><span class="ico"><Mail /></span><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          <li><span class="ico"><Pin /></span>{site.address.street}, {site.address.locality}</li>
+          <li><span class="ico"><Instagram /></span><a href={site.instagram} target="_blank" rel="noopener">Síguenos en Instagram</a></li>
+        </ul>
+      </div>
+      <div class="formcard">
+        <QuoteForm client:visible />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .box {
+    display: grid; gap: 40px; padding: clamp(24px, 5vw, 56px); border-radius: var(--radius-lg);
+    background: linear-gradient(150deg, var(--olive-100), var(--sky-200));
+    color: var(--olive-950);
+  }
+  .copy { --brand: var(--olive-700); }
+  @media (min-width: 960px) { .box { grid-template-columns: 1fr 1.1fr; align-items: center; } }
+  h2 { font-size: clamp(2rem, 4.5vw, 3.25rem); margin-block: 12px 14px; }
+  .copy > p { color: oklch(0.42 0.03 125); font-size: 1.125rem; }
+  ul { list-style: none; padding: 0; margin-top: 28px; display: grid; gap: 14px; }
+  li { display: flex; align-items: center; gap: 14px; font-weight: 500; overflow-wrap: anywhere; }
+  a { text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .ico { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: #fff; color: var(--olive-700); flex: none; }
+  .ico :global(svg) { width: 20px; height: 20px; }
+  .formcard { background: var(--surface); color: var(--text); padding: clamp(20px, 3vw, 32px); border-radius: var(--radius); box-shadow: var(--shadow-lg); }
+</style>

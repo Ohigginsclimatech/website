@@ -1,0 +1,57 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Marquee from '../components/Marquee.astro';
+import Services from '../components/Services.astro';
+import Catalog from '../components/Catalog';
+import BtuCalculator from '../components/BtuCalculator';
+import Process from '../components/Process.astro';
+import Coverage from '../components/Coverage.astro';
+import Faq from '../components/Faq.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFab from '../components/WhatsAppFab.astro';
+---
+
+<Base>
+  <Header />
+  <main id="contenido">
+    <Hero />
+    <Marquee />
+    <Services />
+
+    <section id="equipos" class="section soft">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Equipos y precios</span>
+          <h2>Precios claros, con instalación incluida.</h2>
+          <p>Equipos split muro con WiFi para controlarlos desde el celular. Toca cualquier equipo para ver fotos, ficha y qué incluye.</p>
+        </div>
+        <Catalog client:load />
+      </div>
+    </section>
+
+    <section id="calculadora" class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">¿Qué equipo necesito?</span>
+          <h2>Calcula los BTU de tu espacio en 10 segundos.</h2>
+          <p>Mueve los controles y te decimos qué capacidad te conviene. Así no pagas de más ni te quedas corto.</p>
+        </div>
+        <BtuCalculator client:visible />
+      </div>
+    </section>
+
+    <Process />
+    <Coverage />
+    <Faq />
+    <Contact />
+  </main>
+  <Footer />
+  <WhatsAppFab />
+</Base>
+
+<style>
+  .soft { background: var(--bg-soft); }
+</style>
