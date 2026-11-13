@@ -1,28 +1,31 @@
 ---
-interface Props { light?: boolean }
-const { light = false } = Astro.props;
+interface Props { light?: boolean; size?: number }
+const { light = false, size = 40 } = Astro.props;
 ---
 
 <span class:list={['logo', { light }]}>
-  <svg viewBox="0 0 64 64" aria-hidden="true">
-    <rect width="64" height="64" rx="16" class="tile" />
-    <path d="M32 50C32 50 15 42 15 26C15 17 22 12 32 12C42 12 49 17 49 26C49 42 32 50 32 50Z" class="leaf" />
-    <path d="M32 46V20" class="vein" stroke-width="3" stroke-linecap="round" />
-    <path d="M22 30c4 0 6-2 10-2s6 2 10 2M22 37c4 0 6-2 10-2s6 2 10 2" class="air" stroke-width="2.6" stroke-linecap="round" fill="none" />
+  <svg viewBox="0 0 64 64" width={size} height={size} aria-hidden="true">
+    <rect width="64" height="64" rx="18" class="tile" />
+    <ellipse cx="29" cy="38" rx="15" ry="18" transform="rotate(-18 29 38)" class="fruit" />
+    <path d="M33 21c1.5-3.5 3.5-5 6-5.5" class="stem" />
+    <path d="M38.5 16.5C42 9 50 6.5 57 7.5 54.5 15 47 19.5 38.5 16.5Z" class="leaf" />
+    <path d="M18.5 33.5c3-2.4 6-2.4 9 0s6 2.4 9 0" class="air" />
+    <path d="M20 41.5c3-2.4 6-2.4 9 0s6 2.4 9 0" class="air" />
   </svg>
   <span class="word">Olivar<b>Clima</b></span>
 </span>
 
 <style>
   .logo { display: inline-flex; align-items: center; gap: 10px; }
-  svg { width: 38px; height: 38px; flex: none; }
+  svg { flex: none; }
   .tile { fill: var(--olive-700); }
-  .leaf { fill: var(--olive-400); }
-  .vein { stroke: var(--olive-700); }
-  .air { stroke: oklch(0.97 0.01 95); }
+  .fruit { fill: var(--olive-400); }
+  .leaf { fill: oklch(0.93 0.06 120); }
+  .stem { fill: none; stroke: oklch(0.93 0.06 120); stroke-width: 2.6; stroke-linecap: round; }
+  .air { fill: none; stroke: #fff; stroke-width: 2.8; stroke-linecap: round; }
   .word {
-    font-family: var(--font-display); font-size: 1.375rem; font-weight: 600;
-    letter-spacing: -0.03em; color: var(--brand-strong);
+    font-family: var(--font-display); font-size: 1.4rem; font-weight: 600;
+    letter-spacing: -0.035em; color: var(--brand-strong);
   }
   .word b { font-weight: 800; color: var(--brand); }
   .light .word { color: #fff; }

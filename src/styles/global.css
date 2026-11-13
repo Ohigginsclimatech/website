@@ -12,8 +12,10 @@
 }
 
 @layer tokens {
+  /* Claro por defecto; el botón del encabezado activa el oscuro */
+  :root[data-theme='dark'] { color-scheme: dark; }
   :root {
-    color-scheme: light dark;
+    color-scheme: light;
 
     /* Marca: olivo + aire fresco */
     --olive-950: oklch(0.22 0.04 125);
