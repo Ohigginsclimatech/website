@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Administrador · Olivar Clima</title>
+<link rel="icon" href="/favicon.svg" />
+<style>
+  :root {
+    --olive: #4a6a22; --olive-dark: #2b3a14; --olive-soft: #eef3df; --leaf: #a9c76a;
+    --bg: #f6f5ee; --card: #fff; --text: #22301a; --muted: #66705a; --line: #dfe3d2;
+    --red: #b3261e; --red-soft: #fbe9e7; --wa: #25a35a; --radius: 16px;
+    font-size: 18px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.5; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+
+  header {
+    position: sticky; top: 0; z-index: 10; background: #fff; border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 16px; padding: 14px 28px; flex-wrap: wrap;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; margin-right: auto; }
+  .brand img { width: 44px; height: 44px; }
+  .brand b { font-size: 1.3rem; display: block; line-height: 1.1; }
+  .brand span { color: var(--muted); font-size: .9rem; }
+  .status { padding: 8px 16px; border-radius: 999px; font-weight: 600; font-size: .95rem; background: var(--olive-soft); color: var(--olive); }
+  .status.pending { background: #fff4d6; color: #8a5a00; }
+
+  .btn { border: 0; border-radius: 12px; padding: 14px 22px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; min-height: 52px; }
+  .btn-primary { background: var(--olive); color: #fff; }
+  .btn-primary:hover { background: var(--olive-dark); }
+  .btn-publish { background: var(--wa); color: #fff; font-size: 1.05rem; }
+  .btn-publish:hover { filter: brightness(.95); }
+  .btn-publish:disabled { background: #b9c4b0; cursor: not-allowed; }
+  .btn-light { background: #fff; border: 2px solid var(--line); color: var(--text); }
+  .btn-light:hover { border-color: var(--olive); }
+  .btn-danger { background: var(--red-soft); color: var(--red); }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 28px; }
+  .intro { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .intro h1 { margin: 0; font-size: 1.7rem; }
+  .intro p { margin: 4px 0 0; color: var(--muted); }
+
+  .list { display: grid; gap: 14px; }
+  .item {
+    display: grid; grid-template-columns: 110px 1fr auto; gap: 20px; align-items: center;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 20px 14px 14px;
+  }
+  .item.hidden { opacity: .55; }
+  .item img { width: 110px; height: 90px; object-fit: contain; background: #fff; border-radius: 10px; border: 1px solid var(--line); }
+  .item h3 { margin: 0; font-size: 1.15rem; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .tag { font-size: .8rem; padding: 2px 10px; border-radius: 999px; background: var(--olive-soft); color: var(--olive); font-weight: 600; }
+  .tag.off { background: #eee; color: #777; }
+  .controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+  .price { display: flex; align-items: center; border: 2px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; }
+  .price span { padding: 0 4px 0 14px; font-weight: 700; color: var(--muted); }
+  .price input { border: 0; width: 140px; padding: 12px 12px 12px 2px; font-size: 1.15rem; font-weight: 700; outline: none; }
+  .price:focus-within { border-color: var(--olive); }
+  .switch { display: flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: 600; color: var(--muted); cursor: pointer; user-select: none; }
+  .switch input { width: 22px; height: 22px; accent-color: var(--olive); }
+  .order { display: flex; flex-direction: column; gap: 4px; }
+  .order button { border: 1px solid var(--line); background: #fff; border-radius: 8px; width: 36px; height: 26px; font-size: .8rem; }
+
+  /* Ventana de edición */
+  dialog { border: 0; border-radius: 22px; padding: 0; width: min(100% - 32px, 860px); max-height: 92vh; box-shadow: 0 30px 80px rgba(0,0,0,.25); }
+  dialog::backdrop { background: rgba(30,40,20,.55); }
+  .dlg-head { position: sticky; top: 0; background: #fff; padding: 22px 28px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; z-index: 2; }
+  .dlg-head h2 { margin: 0; }
+  .dlg-body { padding: 24px 28px; display: grid; gap: 18px; }
+  .dlg-foot { position: sticky; bottom: 0; background: #fff; padding: 18px 28px; border-top: 1px solid var(--line); display: flex; gap: 12px; flex-wrap: wrap; }
+  .dlg-foot .spacer { margin-left: auto; }
+  .row { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  label.f { display: grid; gap: 6px; font-weight: 600; }
+  label.f small { font-weight: 400; color: var(--muted); }
+  .f input, .f select, .f textarea { padding: 12px 14px; border-radius: 12px; border: 2px solid var(--line); background: #fff; }
+  .f input:focus, .f select:focus, .f textarea:focus { outline: none; border-color: var(--olive); }
+  .checks { display: flex; gap: 24px; flex-wrap: wrap; }
+  .checks label { display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; }
+  .checks input { width: 24px; height: 24px; accent-color: var(--olive); }
+
+  .photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .photo { position: relative; border: 2px solid var(--line); border-radius: 12px; background: #fff; padding: 6px; }
+  .photo:first-child { border-color: var(--olive); }
+  .photo img { width: 100%; height: 110px; object-fit: contain; display: block; }
+  .photo .badge { position: absolute; top: 6px; left: 6px; background: var(--olive); color: #fff; font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+  .photo .acts { display: flex; justify-content: space-between; margin-top: 6px; }
+  .photo .acts button { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 2px 8px; font-size: .85rem; }
+  .drop {
+    border: 3px dashed var(--leaf); border-radius: 14px; padding: 22px; text-align: center; color: var(--muted);
+    background: var(--olive-soft); cursor: pointer; display: grid; place-items: center; min-height: 140px;
+  }
+  .drop.over { background: #dfe9c4; border-color: var(--olive); }
+  .drop b { color: var(--olive); font-size: 1.05rem; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(120px); transition: transform .3s;
+    background: var(--olive-dark); color: #fff; padding: 14px 24px; border-radius: 14px; font-weight: 600; z-index: 100; max-width: 90vw;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+
+  .overlay { position: fixed; inset: 0; background: rgba(246,245,238,.92); display: none; place-items: center; z-index: 50; text-align: center; }
+  .overlay.show { display: grid; }
+  .spinner { width: 64px; height: 64px; border: 6px solid var(--olive-soft); border-top-color: var(--olive); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .help { margin-top: 32px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 24px; color: var(--muted); }
+  .help b { color: var(--text); }
+  @media (max-width: 760px) { .item { grid-template-columns: 80px 1fr; } .item img { width: 80px; height: 70px; } .controls { grid-column: 1 / -1; justify-content: flex-start; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <img src="/favicon.svg" alt="" />
+    <div><b>Olivar Clima</b><span>Administrador de equipos y precios</span></div>
+  </div>
+  <span id="status" class="status">Cargando…</span>
+  <button id="publish" class="btn btn-publish" disabled>🌐 Publicar en la web</button>
+</header>
+
+<main>
+  <div class="intro">
+    <div>
+      <h1>Tus equipos</h1>
+      <p>Cambia los precios aquí mismo. Para fotos y descripción, presiona <b>Editar</b>.</p>
+    </div>
+    <button id="add" class="btn btn-primary">➕ Agregar equipo nuevo</button>
+  </div>
+  <div id="list" class="list"></div>
+
+  <div class="help">
+    <b>¿Cómo funciona?</b><br />
+    1. Haz tus cambios: precios, fotos, equipos nuevos. Se guardan solos en este computador.<br />
+    2. Cuando termines, presiona el botón verde <b>Publicar en la web</b>.<br />
+    3. En 1 o 2 minutos los cambios aparecen en <b>olivarclima.cl</b>.<br />
+    ¿Se acabó el stock de un equipo? Desmarca <b>“Visible en la web”</b> y no se mostrará, pero no se borra.
+  </div>
+</main>
+
+<dialog id="dlg">
+  <form method="dialog" id="form">
+    <div class="dlg-head">
+      <h2 id="dlg-title">Editar equipo</h2>
+      <button type="button" class="btn btn-light" data-close>✕ Cerrar</button>
+    </div>
+    <div class="dlg-body">
+      <div class="row">
+        <label class="f">Marca
+          <input name="brand" list="brands" required placeholder="Ej: Midea" />
+          <datalist id="brands"></datalist>
+        </label>
+        <label class="f">Nombre del equipo
+          <input name="model" required placeholder="Ej: Split muro 12.000 BTU Inverter" />
+        </label>
+      </div>
+      <div class="row">
+        <label class="f">Tipo
+          <select name="category">
+            <option value="equipo">Equipo de aire acondicionado</option>
+            <option value="accesorio">Accesorio / repuesto</option>
+          </select>
+        </label>
+        <label class="f">Capacidad (BTU)
+          <select name="btu">
+            <option value="">— No aplica —</option>
+            <option>9000</option><option>12000</option><option>18000</option><option>24000</option><option>36000</option>
+          </select>
+        </label>
+        <label class="f">Precio (en pesos)
+          <input name="price" inputmode="numeric" required placeholder="Ej: 450000" />
+        </label>
+      </div>
+      <div class="checks">
+        <label><input type="checkbox" name="inverter" /> Es inverter</label>
+        <label><input type="checkbox" name="wifi" /> Tiene WiFi</label>
+        <label><input type="checkbox" name="withInstall" /> El precio incluye instalación</label>
+        <label><input type="checkbox" name="visible" /> Visible en la web</label>
+      </div>
+      <label class="f">Descripción corta <small>(se ve en la tarjeta del equipo)</small>
+        <input name="summary" placeholder="Ej: Ideal para dormitorios de hasta 15 m²." />
+      </label>
+      <label class="f">Qué incluye <small>(opcional)</small>
+        <textarea name="includes" rows="2" placeholder="Ej: Unidad interior, unidad exterior, control remoto…"></textarea>
+      </label>
+      <div>
+        <div style="font-weight:600;margin-bottom:8px">Fotos <small style="font-weight:400;color:var(--muted)">— la primera (borde verde) es la portada</small></div>
+        <div class="photos" id="photos"></div>
+      </div>
+    </div>
+    <div class="dlg-foot">
+      <button type="button" class="btn btn-danger" id="delete">🗑 Eliminar equipo</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn btn-light" data-close>Cancelar</button>
+      <button type="submit" class="btn btn-primary">💾 Guardar</button>
+    </div>
+  </form>
+  <input type="file" id="file" accept="image/*" multiple hidden />
+</dialog>
+
+<div class="overlay" id="overlay">
+  <div>
+    <div class="spinner"></div>
+    <h2 id="overlay-title" style="margin:0">Publicando…</h2>
+    <p id="overlay-text" style="color:var(--muted)">Esto tarda unos segundos. No cierres esta ventana.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const fmt = (n) => Number(n || 0).toLocaleString('es-CL');
+const parsePrice = (s) => Number(String(s).replace(/[^\d]/g, '')) || 0;
+let products = [];
+let editing = null; // copia del equipo en edición
+let editingIndex = -1;
+
+function toast(msg, error = false) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (error ? ' error' : '');
+  clearTimeout(toast.t);
+  toast.t = setTimeout(() => (t.className = 'toast'), error ? 6000 : 2800);
+}
+
+async function api(url, opts = {}) {
+  const r = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...opts });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || 'Ocurrió un error');
+  return data;
+}
+
+function setStatus(pending) {
+  const s = $('#status');
+  if (pending > 0) {
+    s.textContent = '● Hay cambios sin publicar';
+    s.className = 'status pending';
+    $('#publish').disabled = false;
+  } else {
+    s.textContent = '✓ Todo publicado';
+    s.className = 'status';
+    $('#publish').disabled = true;
+  }
+}
+
+async function save(message = 'Guardado ✓') {
+  try {
+    const r = await api('/api/products', { method: 'PUT', body: JSON.stringify(products) });
+    setStatus(r.pending);
+    if (message) toast(message);
+    return true;
+  } catch (e) {
+    toast(e.message, true);
+    return false;
+  }
+}
+
+function render() {
+  const list = $('#list');
+  list.innerHTML = '';
+  products.forEach((p, i) => {
+    const el = document.createElement('div');
+    el.className = 'item' + (p.visible === false ? ' hidden' : '');
+    el.innerHTML = `
+      <img src="${p.images[0] || '/favicon.svg'}" alt="" />
+      <div>
+        <h3></h3>
+        <div class="tags">
+          <span class="tag"></span>
+          ${p.btu ? `<span class="tag">${fmt(p.btu)} BTU</span>` : ''}
+          ${p.inverter ? '<span class="tag">Inverter</span>' : ''}
+          ${p.withInstall ? '<span class="tag">Con instalación</span>' : ''}
+          ${p.visible === false ? '<span class="tag off">Oculto</span>' : ''}
+        </div>
+      </div>
+      <div class="controls">
+        <div class="price"><span>$</span><input value="${fmt(p.price)}" inputmode="numeric" aria-label="Precio" /></div>
+        <label class="switch"><input type="checkbox" ${p.visible !== false ? 'checked' : ''} /> Visible en la web</label>
+        <button class="btn btn-light edit">✏️ Editar</button>
+        <div class="order">
+          <button class="up" title="Subir" ${i === 0 ? 'disabled' : ''}>▲</button>
+          <button class="down" title="Bajar" ${i === products.length - 1 ? 'disabled' : ''}>▼</button>
+        </div>
+      </div>`;
+    el.querySelector('h3').textContent = p.name;
+    el.querySelector('.tag').textContent = p.brand;
+
+    const priceInput = el.querySelector('.price input');
+    priceInput.addEventListener('input', () => {
+      const n = parsePrice(priceInput.value);
+      priceInput.value = n ? fmt(n) : '';
+    });
+    priceInput.addEventListener('change', () => {
+      p.price = parsePrice(priceInput.value);
+      save(`Precio de “${p.name}” guardado ✓`);
+    });
+    priceInput.addEventListener('keydown', (e) => e.key === 'Enter' && priceInput.blur());
+
+    el.querySelector('.switch input').addEventListener('change', (e) => {
+      p.visible = e.target.checked;
+      save(p.visible ? 'Ahora se muestra en la web' : 'Ocultado de la web').then(render);
+    });
+    el.querySelector('.edit').addEventListener('click', () => openEditor(i));
+    el.querySelector('.up').addEventListener('click', () => move(i, -1));
+    el.querySelector('.down').addEventListener('click', () => move(i, 1));
+    list.append(el);
+  });
+
+  $('#brands').innerHTML = [...new Set(['Midea', 'Hisense', ...products.map((p) => p.brand)])]
+    .map((b) => `<option value="${b}"></option>`).join('');
+}
+
+function move(i, d) {
+  const j = i + d;
+  [products[i], products[j]] = [products[j], products[i]];
+  render();
+  save('Orden guardado ✓');
+}
+
+/* ---------- Editor ---------- */
+const form = $('#form');
+
+function openEditor(i) {
+  editingIndex = i;
+  const blank = {
+    id: '', brand: 'Midea', name: '', btu: 12000, inverter: true, wifi: true, price: 0, withInstall: true,
+    summary: '', includes: 'Unidad interior (evaporadora), unidad exterior (condensadora), control remoto, kit de cañería de 4 m y cable de interconexión de 4,5 m.',
+    images: [], category: 'equipo', visible: true,
+  };
+  editing = structuredClone(i >= 0 ? products[i] : blank);
+  $('#dlg-title').textContent = i >= 0 ? 'Editar equipo' : 'Agregar equipo nuevo';
+  $('#delete').style.display = i >= 0 ? '' : 'none';
+  form.brand.value = editing.brand;
+  form.model.value = editing.name;
+  form.category.value = editing.category;
+  form.btu.value = editing.btu ? String(editing.btu) : '';
+  form.price.value = editing.price ? fmt(editing.price) : '';
+  form.inverter.checked = !!editing.inverter;
+  form.wifi.checked = !!editing.wifi;
+  form.withInstall.checked = !!editing.withInstall;
+  form.visible.checked = editing.visible !== false;
+  form.summary.value = editing.summary || '';
+  form.includes.value = editing.includes || '';
+  renderPhotos();
+  $('#dlg').showModal();
+}
+
+form.price.addEventListener('input', () => {
+  const n = parsePrice(form.price.value);
+  form.price.value = n ? fmt(n) : '';
+});
+
+function renderPhotos() {
+  const box = $('#photos');
+  box.innerHTML = '';
+  editing.images.forEach((src, i) => {
+    const d = document.createElement('div');
+    d.className = 'photo';
+    d.innerHTML = `${i === 0 ? '<span class="badge">PORTADA</span>' : ''}
+      <img src="${src}" alt="" />
+      <div class="acts">
+        <button type="button" title="Mover a la izquierda" ${i === 0 ? 'disabled' : ''}>◀</button>
+        <button type="button" title="Quitar foto">🗑</button>
+        <button type="button" title="Mover a la derecha" ${i === editing.images.length - 1 ? 'disabled' : ''}>▶</button>
+      </div>`;
+    const [l, del, r] = d.querySelectorAll('button');
+    l.onclick = () => { [editing.images[i - 1], editing.images[i]] = [editing.images[i], editing.images[i - 1]]; renderPhotos(); };
+    r.onclick = () => { [editing.images[i + 1], editing.images[i]] = [editing.images[i], editing.images[i + 1]]; renderPhotos(); };
+    del.onclick = () => { editing.images.splice(i, 1); renderPhotos(); };
+    box.append(d);
+  });
+  const drop = document.createElement('div');
+  drop.className = 'drop';
+  drop.innerHTML = '<div><b>📷 Agregar fotos</b><br/>Haz clic aquí o arrastra las fotos</div>';
+  drop.onclick = () => $('#file').click();
+  drop.ondragover = (e) => { e.preventDefault(); drop.classList.add('over'); };
+  drop.ondragleave = () => drop.classList.remove('over');
+  drop.ondrop = (e) => { e.preventDefault(); drop.classList.remove('over'); addFiles(e.dataTransfer.files); };
+  box.append(drop);
+}
+
+$('#file').addEventListener('change', (e) => { addFiles(e.target.files); e.target.value = ''; });
+
+// Achica la foto (máx. 1600 px) para que la web cargue rápido
+function shrink(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 1600;
+      const k = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * k);
+      c.height = Math.round(img.height * k);
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, c.width, c.height);
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(img.src);
+      resolve(c.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = () => reject(new Error(`No se pudo leer “${file.name}”. ¿Es una foto?`));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+async function addFiles(files) {
+  const imgs = [...files].filter((f) => f.type.startsWith('image/'));
+  if (!imgs.length) return toast('Elige archivos de imagen (JPG o PNG)', true);
+  toast(`Subiendo ${imgs.length} foto(s)…`);
+  for (const f of imgs) {
+    try {
+      const data = await shrink(f);
+      const r = await api('/api/upload', { method: 'POST', body: JSON.stringify({ name: form.model.value || f.name, data }) });
+      editing.images.push(r.path);
+      renderPhotos();
+    } catch (e) {
+      toast(e.message, true);
+    }
+  }
+  toast('Fotos agregadas ✓ (recuerda presionar Guardar)');
+}
+
+function slugify(s) {
+  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const price = parsePrice(form.price.value);
+  if (!form.model.value.trim()) return toast('Escribe el nombre del equipo', true);
+  if (!price) return toast('Escribe el precio', true);
+  Object.assign(editing, {
+    brand: form.brand.value.trim(),
+    name: form.model.value.trim(),
+    category: form.category.value,
+    btu: form.btu.value ? Number(form.btu.value) : undefined,
+    price,
+    inverter: form.inverter.checked,
+    wifi: form.wifi.checked,
+    withInstall: form.withInstall.checked,
+    visible: form.visible.checked,
+    summary: form.summary.value.trim(),
+    includes: form.includes.value.trim(),
+  });
+  if (!editing.btu) delete editing.btu;
+  if (editingIndex < 0) {
+    let id = slugify(`${editing.brand}-${editing.name}`) || 'equipo';
+    while (products.some((p) => p.id === id)) id += '-2';
+    editing.id = id;
+    products.push(editing);
+  } else {
+    products[editingIndex] = editing;
+  }
+  if (await save(editingIndex < 0 ? 'Equipo agregado ✓' : 'Cambios guardados ✓')) {
+    $('#dlg').close();
+    render();
+  }
+});
+
+$('#delete').addEventListener('click', async () => {
+  if (!confirm(`¿Seguro que quieres ELIMINAR “${products[editingIndex].name}”?\n\nSi solo se acabó el stock, mejor desmarca “Visible en la web”.`)) return;
+  products.splice(editingIndex, 1);
+  if (await save('Equipo eliminado')) { $('#dlg').close(); render(); }
+});
+
+document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => $('#dlg').close()));
+$('#add').addEventListener('click', () => openEditor(-1));
+
+/* ---------- Publicar ---------- */
+$('#publish').addEventListener('click', async () => {
+  if (!confirm('¿Publicar los cambios en olivarclima.cl?\n\nLa web se actualizará en 1 a 2 minutos.')) return;
+  const ov = $('#overlay');
+  $('#overlay-title').textContent = 'Publicando…';
+  $('#overlay-text').textContent = 'Revisando la web y subiéndola a internet. No cierres esta ventana.';
+  ov.classList.add('show');
+  try {
+    await api('/api/publish', { method: 'POST' });
+    setStatus(0);
+    ov.classList.remove('show');
+    alert('✅ ¡Listo! Los cambios se subieron.\n\nEn 1 o 2 minutos aparecerán en olivarclima.cl');
+  } catch (e) {
+    ov.classList.remove('show');
+    alert('❌ No se pudo publicar:\n\n' + e.message);
+  }
+});
+
+window.addEventListener('beforeunload', (e) => {
+  if (!$('#publish').disabled) { e.preventDefault(); e.returnValue = ''; }
+});
+
+(async () => {
+  try {
+    products = await api('/api/products');
+    render();
+    setStatus((await api('/api/status')).pending);
+  } catch (e) {
+    toast('No se pudo cargar: ' + e.message, true);
+  }
+})();
+</script>
+</body>
+</html>

@@ -4,18 +4,21 @@ import { waLink } from '../data/site';
 import { WhatsApp, Close, Check, Wifi, Leaf, Arrow } from './icons';
 import s from './Catalog.module.css';
 
-type Filter = 'todos' | '9000' | '12000' | '18000' | 'inverter' | 'accesorio';
-
-const filters: { id: Filter; label: string }[] = [
-  { id: 'todos', label: 'Todos' },
-  { id: '9000', label: '9.000 BTU' },
-  { id: '12000', label: '12.000 BTU' },
-  { id: '18000', label: '18.000 BTU' },
-  { id: 'inverter', label: 'Inverter' },
-  { id: 'accesorio', label: 'Accesorios' },
-];
+type Filter = string; // 'todos' | 'inverter' | 'accesorio' | un número de BTU
 
 const btuLabel = (n?: number) => (n ? `${n.toLocaleString('es-CL')} BTU` : '');
+
+// Los filtros se arman solos según los equipos que haya en el catálogo
+const filters: { id: Filter; label: string }[] = [
+  { id: 'todos', label: 'Todos' },
+  ...[...new Set(products.map((p) => p.btu).filter((b): b is number => !!b))]
+    .sort((a, b) => a - b)
+    .map((b) => ({ id: String(b), label: btuLabel(b) })),
+  ...(products.some((p) => p.inverter) ? [{ id: 'inverter', label: 'Inverter' }] : []),
+  ...(products.some((p) => p.category === 'accesorio') ? [{ id: 'accesorio', label: 'Accesorios' }] : []),
+];
+
+const placeholder = '/favicon.svg';
 
 function matches(p: Product, f: Filter) {
   if (f === 'todos') return true;
@@ -73,7 +76,7 @@ export default function Catalog() {
         {list.map((p) => (
           <article key={p.id} className={s.card} style={{ viewTransitionName: `p-${p.id}` }}>
             <button className={s.media} onClick={() => open(p)} aria-label={`Ver detalles de ${p.brand} ${p.name}`}>
-              <img src={p.cover ?? p.images[0]} alt={`${p.brand} ${p.name}`} loading="lazy" decoding="async" />
+              <img src={p.images[0] ?? placeholder} alt={`${p.brand} ${p.name}`} loading="lazy" decoding="async" />
               <span className={s.brand}>{p.brand}</span>
             </button>
             <div className={s.body}>
@@ -111,7 +114,7 @@ export default function Catalog() {
 
             <div className={s.gallery}>
               <div className={s.main}>
-                <img src={active.images[img]} alt={`${active.brand} ${active.name}, imagen ${img + 1}`} />
+                <img src={active.images[img] ?? placeholder} alt={`${active.brand} ${active.name}, imagen ${img + 1}`} />
               </div>
               {active.images.length > 1 && (
                 <div className={s.thumbs}>
